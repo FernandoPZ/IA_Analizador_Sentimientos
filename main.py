@@ -1,42 +1,53 @@
-# 1. Importamos las herramientas necesarias
+import customtkinter as ctk
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import make_pipeline
 
-# 2. Datos de entrenamiento (Dataset)
-# En un proyecto real, esto vendría de un archivo CSV o base de datos.
+# --- PARTE 1: LÓGICA DE INTELIGENCIA ARTIFICIAL ---
 textos = [
-    "Me encanta este producto, es increíble", 
-    "Excelente calidad y muy rápido",
-    "El mejor software que he usado",
-    "No me gusta, es muy lento",
-    "Pésimo servicio y mala calidad",
-    "Es lo peor, no lo compren",
-    "Funciona muy bien y es barato",
-    "Horrible experiencia, estoy decepcionado"
+    "Me encanta este producto", "Excelente calidad", "El mejor software",
+    "No me gusta, es muy lento", "Pésimo servicio", "Es lo peor",
+    "Funciona muy bien", "Horrible experiencia", "Me siento feliz con la compra",
+    "No funciona, dinero tirado"
 ]
+etiquetas = [1, 1, 1, 0, 0, 0, 1, 0, 1, 0]
 
-# Etiquetas: 1 para Positivo, 0 para Negativo
-etiquetas = [1, 1, 1, 0, 0, 0, 1, 0]
-
-# 3. Creación del Modelo
-# Usamos un 'Pipeline' para combinar la conversión de texto a números 
-# y el algoritmo de clasificación en un solo paso.
+# Entrenamos el modelo
 modelo = make_pipeline(CountVectorizer(), MultinomialNB())
-
-# 4. Entrenamiento
-# Aquí el modelo aprende la relación entre las palabras y las etiquetas.
 modelo.fit(textos, etiquetas)
 
-# 5. Función para probar el modelo
-def analizar_sentimiento(frase):
-    prediccion = modelo.predict([frase])
-    sentimiento = "Positivo" if prediccion[0] == 1 else "Negativo"
-    return sentimiento
+# --- PARTE 2: INTERFAZ GRÁFICA ---
+class AppIA(ctk.CTk):
+    def __init__(self):
+        super().__init__()
+        # Configuración de la ventana
+        self.title("Analizador de Sentimientos IA")
+        self.geometry("450x300")
+        ctk.set_appearance_mode("dark") # Modo oscuro por defecto
+        # Título
+        self.label_titulo = ctk.CTkLabel(self, text="Detector de Sentimientos", font=("Arial", 20, "bold"))
+        self.label_titulo.pack(pady=20)
+        # Campo de entrada de texto
+        self.entrada_texto = ctk.CTkEntry(self, placeholder_text="Escribe tu reseña aquí...", width=300)
+        self.entrada_texto.pack(pady=10)
+        # Botón de Análisis
+        self.boton_analizar = ctk.CTkButton(self, text="Analizar Texto", command=self.ejecutar_analisis)
+        self.boton_analizar.pack(pady=10)
+        # Etiqueta de Resultado
+        self.resultado_label = ctk.CTkLabel(self, text="Resultado: Esperando...", font=("Arial", 16))
+        self.resultado_label.pack(pady=20)
+    def ejecutar_analisis(self):
+        frase = self.entrada_texto.get()
+        if frase:
+            prediccion = modelo.predict([frase])[0]
+            if prediccion == 1:
+                self.resultado_label.configure(text="Resultado: POSITIVO 😊", text_color="#2ecc71")
+            else:
+                self.resultado_label.configure(text="Resultado: NEGATIVO 😡", text_color="#e74c3c")
+        else:
+            self.resultado_label.configure(text="Por favor, escribe algo.", text_color="yellow")
 
-# --- PRUEBA DEL CÓDIGO ---
-nueva_frase = "Este código es fantástico y funciona perfecto"
-resultado = analizar_sentimiento(nueva_frase)
-
-print(f"Frase: '{nueva_frase}'")
-print(f"Resultado del análisis: {resultado}")
+# Iniciar la aplicación
+if __name__ == "__main__":
+    app = AppIA()
+    app.mainloop()
