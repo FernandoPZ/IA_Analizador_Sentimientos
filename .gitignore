@@ -1,1 +1,5 @@
+# Entornos virtuales
 venv/
+
+# Base de datos local
+dataset.csv
