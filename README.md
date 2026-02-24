@@ -42,5 +42,9 @@ Sigue estos pasos para probar la aplicación en tu computadora:
     ```
 
 ## 📸 Capturas de Pantalla
-(Aqui fotos)
 
+<p align="center">
+  <img src="photos/img0.png" alt="Pantalla principal" width="32%" />
+  <img src="photos/img1.png" alt="Análisis positivo" width="32%" />
+  <img src="photos/img2.png" alt="Análisis negativo" width="32%" />
+</p>
